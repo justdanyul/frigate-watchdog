@@ -1,0 +1,27 @@
+[Unit]
+Description=Frigate recording watchdog
+Documentation=https://docs.frigate.video/integrations/api
+# Start after Docker so Frigate has a chance to come up; the script's own
+# STARTUP_GRACE handles the rest.
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/frigate-watchdog.env
+ExecStart=/usr/bin/frigate-watchdog
+Restart=always
+RestartSec=30
+
+# Run as a throwaway unprivileged user. It only needs HTTP/MQTT on localhost.
+# (If you ever rely on the `docker exec` fallback for go2rtc, override with
+#  `systemctl edit frigate-watchdog`: DynamicUser=no, User=<you>,
+#  SupplementaryGroups=docker.)
+DynamicUser=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

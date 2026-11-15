@@ -1,0 +1,22 @@
+post_install() {
+  cat <<'EOF'
+==> frigate-watchdog installed.
+==> 1. Edit /etc/frigate-watchdog.env (FRIGATE_URL, GO2RTC_URL, MQTT_*).
+==> 2. Optional: try it first with
+==>      sudo systemd-run --pty -p EnvironmentFile=/etc/frigate-watchdog.env /usr/bin/frigate-watchdog --once --dry-run -v
+==> 3. Enable:  sudo systemctl enable --now frigate-watchdog
+==>    Logs:    journalctl -u frigate-watchdog -f
+EOF
+}
+
+post_upgrade() {
+  systemctl daemon-reload 2>/dev/null || true
+  if systemctl is-active --quiet frigate-watchdog; then
+    systemctl restart frigate-watchdog
+    echo "==> frigate-watchdog restarted."
+  fi
+}
+
+pre_remove() {
+  systemctl disable --now frigate-watchdog 2>/dev/null || true
+}

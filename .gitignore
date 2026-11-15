@@ -1,0 +1,22 @@
+# makepkg build artefacts
+src/
+pkg/
+*.pkg.tar
+*.pkg.tar.*
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local settings with real credentials (keep the template frigate-watchdog.env committed)
+*.local.env
+.env
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
